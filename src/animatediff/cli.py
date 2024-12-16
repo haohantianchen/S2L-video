@@ -343,7 +343,8 @@ def generate(
     # get a timestamp for the output directory
     time_str = datetime.now().strftime("%Y-%m-%dT%H-%M-%S")
     # make the output directory
-    save_dir = out_dir.joinpath(f"{time_str}-{model_config.save_name}")
+    # save_dir = out_dir.joinpath(f"{time_str}-{model_config.save_name}")
+    save_dir = out_dir.joinpath(f"{model_config.save_name}")
     save_dir.mkdir(parents=True, exist_ok=True)
     logger.info(f"Will save outputs to ./{path_from_cwd(save_dir)}")
 
