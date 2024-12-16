@@ -31,7 +31,7 @@ from animatediff import get_dir
 from animatediff.dwpose import DWposeDetector
 from animatediff.models.clip import CLIPSkipTextModel
 from animatediff.models.unet import UNet3DConditionModel
-from animatediff.pipelines import AnimationPipeline, load_text_embeddings
+from animatediff.pipelines import AnimationPipeline, load_text_embeddings, MybidAnimationPipeline, MyAnimationPipeline
 from animatediff.pipelines.lora import load_lcm_lora, load_lora_map
 from animatediff.pipelines.pipeline_controlnet_img2img_reference import \
     StableDiffusionControlNetImg2ImgReferencePipeline
@@ -184,7 +184,7 @@ def load_motion_lora(unet, lora_path:Path, alpha=1.0):
 
         up_key    = key.replace(".down.", ".up.")
         model_key = key.replace("processor.", "").replace("_lora", "").replace("down.", "").replace("up.", "")
-        model_key = model_key.replace("to_out.", "to_out.0.")
+        # model_key = model_key.replace("to_out.", "to_out.0.")
         layer_infos = model_key.split(".")[:-1]
 
         curr_layer = unet
@@ -730,7 +730,9 @@ def create_pipeline(
             raise ValueError(f"{lora_path=} not found")
 
     logger.info("Creating AnimationPipeline...")
-    pipeline = AnimationPipeline(
+    # pipeline = AnimationPipeline(
+    pipeline = MyAnimationPipeline(
+    # pipeline = MybidAnimationPipeline(
         vae=vae,
         text_encoder=text_encoder,
         tokenizer=tokenizer,
@@ -997,6 +999,7 @@ def controlnet_preprocess(
                                 if frame_no not in controlnet_image_map:
                                     controlnet_image_map[frame_no] = {}
                                 controlnet_image_map[frame_no][c] = get_preprocessed_img( c, get_resized_image2(img_path, 512) , use_preprocessor, device_str, preprocessor_map)
+                                # controlnet_image_map[frame_no][c] = get_preprocessed_img( c, get_resized_image2(img_path, 768) , use_preprocessor, device_str, preprocessor_map)
                                 processed = True
                 else:
                     logger.info(f"invalid controlnet type for {'sdxl' if is_sdxl else 'sd15'} : {c}")
